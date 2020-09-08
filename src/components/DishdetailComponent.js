@@ -33,7 +33,7 @@ function DishDetailRender(props){
     return(<div></div>);
 }
 
-function RenderDish(dish){
+function RenderDish({dish}){
     return(
         <Card>
             <CardImg width="100%" src = {dish.image} alt={dish.name}></CardImg>
@@ -46,4 +46,4 @@ function RenderDish(dish){
 }
 
 
-export default DishDetail;
+export default DishDetailRender;
