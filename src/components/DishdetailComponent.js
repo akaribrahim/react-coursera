@@ -3,11 +3,28 @@ import { Component } from 'react';
 import { Control, Errors, LocalForm } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 import {required, minLength, maxLength} from './ContactComponent';
-import {Button, Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb, Modal, ModalHeader, ModalBody, ModalFooter, Row, Label, Col, FormGroup, Input} from 'reactstrap';
-
-function DishDetailRender({dish, comments, addComment}){
-
-    if(dish != null){
+import {Button, Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb, Modal, ModalHeader, ModalBody, ModalFooter, Row, Label, Col} from 'reactstrap';
+import {Loading} from './LoadingComponent';
+function DishDetailRender({dish, isLoading, errMess, comments, addComment}){
+    if(isLoading){
+        return(
+            <div className="container">
+                <div className="row">
+                    <Loading/>
+                </div>
+            </div>
+        );
+    }
+    else if(errMess){
+        return(
+            <div className="container">
+                <div className="row">
+                    <h4>{errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if(dish != null){
         return (
             <div className="container">
 
@@ -61,6 +78,7 @@ class CommentForm extends Component {
     
     handleSubmit (values) {
         this.toggleModal();
+        alert(this.props.dishId);
         this.props.addComment(this.props.dishId, values.rating, values.userName, values.comment);
     }
 
@@ -68,7 +86,7 @@ class CommentForm extends Component {
         return(
             <div>
                 <Button className="btn btn-primary" onClick={this.toggleModal}>
-                    <span><i class="fa fa-comment mr-2" aria-hidden="true"></i></span>
+                    <span><i className="fa fa-comment mr-2" aria-hidden="true"></i></span>
                     Submit Comment
                 </Button>
 
