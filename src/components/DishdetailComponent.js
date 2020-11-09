@@ -5,7 +5,11 @@ import { Link } from 'react-router-dom';
 import {required, minLength, maxLength} from './ContactComponent';
 import {Button, Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb, Modal, ModalHeader, ModalBody, ModalFooter, Row, Label, Col} from 'reactstrap';
 import {Loading} from './LoadingComponent';
-function DishDetailRender({dish, isLoading, errMess, comments, addComment}){
+import {baseUrl} from '../shared/baseUrl';
+import {FadeTransform, Fade, Stagger} from 'react-animation-components';
+
+
+function DishDetailRender({dish, isLoading, errMess, comments, postComment}){
     if(isLoading){
         return(
             <div className="container">
@@ -43,18 +47,23 @@ function DishDetailRender({dish, isLoading, errMess, comments, addComment}){
                     <div className="col-12 col-md-5 m-1">
                         <h4>Comments</h4>
                         <ul className="list-unstyled">
-                            {
-                                comments.map((comment) => {
-                                    return (
-                                        <li key={comment.id} className="mt-3">
-                                            {comment.comment}<br/>
-                                            -- {comment.author} , {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
-                                        </li>
-                                    );
-                                })
-                            }
+                            <Stagger in>
+                                {
+                                    comments.map((comment) => {
+                                        return (
+                                            <Fade in>
+                                                <li key={comment.id} className="mt-3">
+                                                    {comment.comment}<br/>
+                                                    -- {comment.author} , {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
+                                                </li>
+                                            </Fade>
+                                            
+                                        );
+                                    })
+                                }
+                            </Stagger>
                         </ul>
-                        <CommentForm dishId={dish.id} addComment={addComment} /> 
+                        <CommentForm dishId={dish.id} postComment={postComment} /> 
                     </div>
                 </div>
             </div>
@@ -79,7 +88,7 @@ class CommentForm extends Component {
     handleSubmit (values) {
         this.toggleModal();
         alert(this.props.dishId);
-        this.props.addComment(this.props.dishId, values.rating, values.userName, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.userName, values.comment);
     }
 
     render () {
@@ -148,13 +157,19 @@ class CommentForm extends Component {
 
 function RenderDish({dish}){
     return(
-        <Card>
-            <CardImg width="100%" src = {dish.image} alt={dish.name}></CardImg>
-            <CardBody>
-                <CardTitle>{dish.name}</CardTitle>
-                <CardText>{dish.description}</CardText>
-            </CardBody>
-        </Card>
+        <FadeTransform in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-30%)'
+                }}>
+            <Card>
+                <CardImg width="100%" src = {baseUrl + dish.image} alt={dish.name}></CardImg>
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
+        </FadeTransform>
+        
     );
 }
 
